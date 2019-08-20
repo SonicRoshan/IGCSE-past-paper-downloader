@@ -1,5 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+data/
+*.pdf
 *.py[cod]
 *$py.class
 
@@ -56,6 +58,10 @@ coverage.xml
 local_settings.py
 db.sqlite3
 
+data/
+*.pdf
+
+
 # Flask stuff:
 instance/
 .webassets-cache
@@ -103,5 +109,3 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-data/
-*.pdf
