@@ -142,8 +142,12 @@ def download_papers(papers_urls):
 
         data = requests.get(paper_url, headers=config.HEADERS).content
 
-        with open("{}/{}_{}.pdf".format(folder, num, paper_name), "wb") as file:
+        name = "{}/{}_{}.pdf".format(folder, num, paper_name)
+        with open(name+"_temp", "wb") as file:
             file.write(data)
+
+        remove_blank_pages(name+"_temp", name)
+        os.remove(name+"_temp")
 
 
 def filter_papers(papers_urls, to_filter):
@@ -187,9 +191,7 @@ def merge():
     merger = pdf_merge(config.QUESTION_PAPERS_FOLDER)
 
     os.chdir(config.MERGED_FOLDER)
-    merger.write(config.MERGED_TEMP_FILE)
-    remove_blank_pages(config.MERGED_TEMP_FILE, config.MERGED_FILE)
-    os.remove(config.MERGED_TEMP_FILE)
+    merger.write(config.MERGED_FILE)
 
 def main():
     """Main Loop"""
