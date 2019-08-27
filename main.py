@@ -125,29 +125,33 @@ def get_papers_urls(year_url):
 
     return papers_urls
 
-def download_papers(papers_urls):
+def download_papers(years_urls, to_filter):
     """Download all papers from a dict of paper urls"""
-    mkdir(config.QUESTION_PAPERS_FOLDER)
-    mkdir(config.MARK_SCHEME_FOLDER)
-    num = len(os.listdir(config.QUESTION_PAPERS_FOLDER))
+    for year_url in years_urls:
+        papers_urls = get_papers_urls(year_url)
+        papers_urls = filter_papers(papers_urls, to_filter)
 
-    for paper_name, paper_url in papers_urls.items():
-        _, paper_type = get_paper_data(paper_name)
-        print("Downloading {}".format(paper_name))
+        mkdir(config.QUESTION_PAPERS_FOLDER)
+        mkdir(config.MARK_SCHEME_FOLDER)
+        num = len(os.listdir(config.QUESTION_PAPERS_FOLDER))
 
-        if paper_type != "ms":
-            folder = config.QUESTION_PAPERS_FOLDER
-        else:
-            folder = config.MARK_SCHEME_FOLDER
+        for paper_name, paper_url in papers_urls.items():
+            _, paper_type = get_paper_data(paper_name)
+            print("Downloading {}".format(paper_name))
 
-        data = requests.get(paper_url, headers=config.HEADERS).content
+            if paper_type != "ms":
+                folder = config.QUESTION_PAPERS_FOLDER
+            else:
+                folder = config.MARK_SCHEME_FOLDER
 
-        name = "{}/{}_{}.pdf".format(folder, num, paper_name)
-        with open(name+"_temp", "wb") as file:
-            file.write(data)
+            data = requests.get(paper_url, headers=config.HEADERS).content
 
-        remove_blank_pages(name+"_temp", name)
-        os.remove(name+"_temp")
+            name = "{}/{}_{}.pdf".format(folder, num, paper_name)
+            with open(name+"_temp", "wb") as file:
+                file.write(data)
+
+            remove_blank_pages(name+"_temp", name)
+            os.remove(name+"_temp")
 
 
 def filter_papers(papers_urls, to_filter):
@@ -175,10 +179,8 @@ def download():
     mkdir(paper_code)
 
     os.chdir(paper_code)
-    for year_url in years_urls:
-        papers_urls = get_papers_urls(year_url)
-        papers_urls = filter_papers(papers_urls, to_filter)
-        download_papers(papers_urls)
+
+    download_papers(years_urls, to_filter)
 
 def merge():
     """merges past papers"""
@@ -192,6 +194,7 @@ def merge():
 
     os.chdir(config.MERGED_FOLDER)
     merger.write(config.MERGED_FILE)
+    remove_blank_pages(config.MERGED_FILE, "temo.pdf")
 
 def main():
     """Main Loop"""
