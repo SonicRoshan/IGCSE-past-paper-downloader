@@ -125,7 +125,7 @@ def get_papers_urls(year_url):
 
     return papers_urls
 
-def download_papers(years_urls, to_filter):
+def download_papers(paper_code, years_urls, to_filter):
     """Download all papers from a dict of paper urls"""
     for year_url in years_urls:
         papers_urls = get_papers_urls(year_url)
@@ -146,7 +146,11 @@ def download_papers(years_urls, to_filter):
 
             data = requests.get(paper_url, headers=config.HEADERS).content
 
-            name = "{}/{}_{}.pdf".format(folder, num, paper_name)
+            name = "{}/{}/{}/{}_{}.pdf".format(config.DATA_FOLDER,
+                                               paper_code,
+                                               folder,
+                                               num,
+                                               paper_name)
             with open(name+"_temp", "wb") as file:
                 file.write(data)
 
@@ -175,12 +179,9 @@ def download():
     years_urls = get_each_years_url(subject_url, start_year, end_year)
 
     mkdir(config.DATA_FOLDER)
-    os.chdir(config.DATA_FOLDER)
     mkdir(paper_code)
 
-    os.chdir(paper_code)
-
-    download_papers(years_urls, to_filter)
+    download_papers(paper_code, years_urls, to_filter)
 
 def merge():
     """merges past papers"""
