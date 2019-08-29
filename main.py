@@ -131,8 +131,8 @@ def download_papers(paper_code, years_urls, to_filter):
         papers_urls = get_papers_urls(year_url)
         papers_urls = filter_papers(papers_urls, to_filter)
 
-        mkdir(config.QUESTION_PAPERS_FOLDER)
-        mkdir(config.MARK_SCHEME_FOLDER)
+        mkdir("{}/{}/{}".format(config.DATA_FOLDER, paper_code, config.QUESTION_PAPERS_FOLDER))
+        mkdir("{}/{}/{}".format(config.DATA_FOLDER, paper_code, config.MARK_SCHEME_FOLDER))
         num = len(os.listdir(config.QUESTION_PAPERS_FOLDER))
 
         for paper_name, paper_url in papers_urls.items():
